@@ -1,18 +1,18 @@
 # **mpu6050_to_imu_ROS**
 
-This project was modified by [fsteinhardt/mpu6050_serial_to_imu](https://github.com/fsteinhardt/mpu6050_serial_to_imu). This project if you want to get IMU data through MPU6050, You need an additional Ardunio development board.
+This project was modified by [fsteinhardt/mpu6050_serial_to_imu](https://github.com/fsteinhardt/mpu6050_serial_to_imu). This project if you want to get IMU data through MPU6050, You need an additional Arduino development board.
 
 
 
 ## **mpu6050_serial_to_imu** 
 
-This package use Ardunio and MPU6050(GY-521) to publish imu data in ROS.
+This package use Arduino and MPU6050(GY-521) to publish imu data in ROS.
 
 You can see more details in [mpu6050_serial_to_imu/README.md](https://github.com/MaxChanger/mpu6050_to_imu_ROS/blob/master/mpu6050_serial_to_imu/README.md)
 
 Besides, I add the libraries (MPU6050 I2Cdev I2CMaster) in `mpu6050_serial_to_imu/arduino/MPU6050/`.
 
-So you can copy them to the libraries of Ardunio IDE directly.
+So you can copy them to the libraries of Arduino IDE directly.
 
 If you have finished all the work , you can run this command to see the 3D model in rviz.
 
