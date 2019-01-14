@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 	tf::Quaternion orientation;
 	tf::Quaternion zero_orientation;
 
-	ros::init(argc, argv, "mpu6050_serial_to_imu_node");
+	ros::init(argc, argv, "mpu6050_serial_ttl_to_imu_node");
 
 	ros::NodeHandle private_node_handle("~");
 	private_node_handle.param<std::string>("port", port, "/dev/ttyUSB0");
