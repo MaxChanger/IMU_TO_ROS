@@ -11,15 +11,15 @@
 
 bool zero_orientation_set = false;
 
-bool set_zero_orientation(std_srvs::Empty::Request&,
-                          std_srvs::Empty::Response&)
+bool set_zero_orientation(std_srvs::Empty::Request &,
+                          std_srvs::Empty::Response &)
 {
   ROS_INFO("Zero Orientation Set.");
   zero_orientation_set = false;
   return true;
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   serial::Serial ser;
   std::string port;
@@ -77,19 +77,19 @@ int main(int argc, char** argv)
 
   static tf::TransformBroadcaster tf_br;
   tf::Transform transform;
-  transform.setOrigin(tf::Vector3(0,0,0));
+  transform.setOrigin(tf::Vector3(0, 0, 0));
 
   std::string input;
   std::string read;
 
-  while(ros::ok())
+  while (ros::ok())
   {
     try
     {
       if (ser.isOpen())
       {
         // read string from serial device
-        if(ser.available())
+        if (ser.available())
         {
           read = ser.read(ser.available());
           ROS_DEBUG("read %i new characters from serial port, adding to %i characters of old input.", (int)read.size(), (int)input.size());
@@ -101,19 +101,19 @@ int main(int argc, char** argv)
             if (data_packet_start != std::string::npos)
             {
               ROS_DEBUG("found possible start of data packet at position %d", data_packet_start);
-              if ((input.length() >= data_packet_start + 28) && (input.compare(data_packet_start + 26, 2, "\r\n") == 0))  //check if positions 26,27 exist, then test values
+              if ((input.length() >= data_packet_start + 28) && (input.compare(data_packet_start + 26, 2, "\r\n") == 0)) //check if positions 26,27 exist, then test values
               {
                 ROS_DEBUG("seems to be a real data package: long enough and found end characters");
                 // get quaternion values
-                int16_t w = (((0xff &(char)input[data_packet_start + 2]) << 8) | 0xff &(char)input[data_packet_start + 3]);
-                int16_t x = (((0xff &(char)input[data_packet_start + 4]) << 8) | 0xff &(char)input[data_packet_start + 5]);
-                int16_t y = (((0xff &(char)input[data_packet_start + 6]) << 8) | 0xff &(char)input[data_packet_start + 7]);
-                int16_t z = (((0xff &(char)input[data_packet_start + 8]) << 8) | 0xff &(char)input[data_packet_start + 9]);
+                int16_t w = (((0xff & (char)input[data_packet_start + 2]) << 8) | 0xff & (char)input[data_packet_start + 3]);
+                int16_t x = (((0xff & (char)input[data_packet_start + 4]) << 8) | 0xff & (char)input[data_packet_start + 5]);
+                int16_t y = (((0xff & (char)input[data_packet_start + 6]) << 8) | 0xff & (char)input[data_packet_start + 7]);
+                int16_t z = (((0xff & (char)input[data_packet_start + 8]) << 8) | 0xff & (char)input[data_packet_start + 9]);
 
-                double wf = w/16384.0;
-                double xf = x/16384.0;
-                double yf = y/16384.0;
-                double zf = z/16384.0;
+                double wf = w / 16384.0;
+                double xf = x / 16384.0;
+                double yf = y / 16384.0;
+                double zf = z / 16384.0;
 
                 tf::Quaternion orientation(xf, yf, zf, wf);
 
@@ -128,31 +128,31 @@ int main(int argc, char** argv)
                 differential_rotation = zero_orientation.inverse() * orientation;
 
                 // get gyro values
-                int16_t gx = (((0xff &(char)input[data_packet_start + 10]) << 8) | 0xff &(char)input[data_packet_start + 11]);
-                int16_t gy = (((0xff &(char)input[data_packet_start + 12]) << 8) | 0xff &(char)input[data_packet_start + 13]);
-                int16_t gz = (((0xff &(char)input[data_packet_start + 14]) << 8) | 0xff &(char)input[data_packet_start + 15]);
+                int16_t gx = (((0xff & (char)input[data_packet_start + 10]) << 8) | 0xff & (char)input[data_packet_start + 11]);
+                int16_t gy = (((0xff & (char)input[data_packet_start + 12]) << 8) | 0xff & (char)input[data_packet_start + 13]);
+                int16_t gz = (((0xff & (char)input[data_packet_start + 14]) << 8) | 0xff & (char)input[data_packet_start + 15]);
                 // calculate rotational velocities in rad/s
                 // without the last factor the velocities were too small
                 // http://www.i2cdevlib.com/forums/topic/106-get-angular-velocity-from-mpu-6050/
                 // FIFO frequency 100 Hz -> factor 10 ?
                 // seems 25 is the right factor
                 //TODO: check / test if rotational velocities are correct
-                double gxf = gx * (4000.0/65536.0) * (M_PI/180.0) * 25.0;
-                double gyf = gy * (4000.0/65536.0) * (M_PI/180.0) * 25.0;
-                double gzf = gz * (4000.0/65536.0) * (M_PI/180.0) * 25.0;
+                double gxf = gx * (4000.0 / 65536.0) * (M_PI / 180.0) * 25.0;
+                double gyf = gy * (4000.0 / 65536.0) * (M_PI / 180.0) * 25.0;
+                double gzf = gz * (4000.0 / 65536.0) * (M_PI / 180.0) * 25.0;
 
                 // get acelerometer values
-                int16_t ax = (((0xff &(char)input[data_packet_start + 16]) << 8) | 0xff &(char)input[data_packet_start + 17]);
-                int16_t ay = (((0xff &(char)input[data_packet_start + 18]) << 8) | 0xff &(char)input[data_packet_start + 19]);
-                int16_t az = (((0xff &(char)input[data_packet_start + 20]) << 8) | 0xff &(char)input[data_packet_start + 21]);
+                int16_t ax = (((0xff & (char)input[data_packet_start + 16]) << 8) | 0xff & (char)input[data_packet_start + 17]);
+                int16_t ay = (((0xff & (char)input[data_packet_start + 18]) << 8) | 0xff & (char)input[data_packet_start + 19]);
+                int16_t az = (((0xff & (char)input[data_packet_start + 20]) << 8) | 0xff & (char)input[data_packet_start + 21]);
                 // calculate accelerations in m/s²
                 double axf = ax * (8.0 / 65536.0) * 9.81;
                 double ayf = ay * (8.0 / 65536.0) * 9.81;
                 double azf = az * (8.0 / 65536.0) * 9.81;
 
                 // get temperature
-                int16_t temperature = (((0xff &(char)input[data_packet_start + 22]) << 8) | 0xff &(char)input[data_packet_start + 23]);
-                double temperature_in_C = (temperature / 340.0 ) + 36.53;
+                int16_t temperature = (((0xff & (char)input[data_packet_start + 22]) << 8) | 0xff & (char)input[data_packet_start + 23]);
+                double temperature_in_C = (temperature / 340.0) + 36.53;
                 ROS_DEBUG_STREAM("Temperature [in C] " << temperature_in_C);
 
                 uint8_t received_message_number = input[data_packet_start + 25];
@@ -161,7 +161,7 @@ int main(int argc, char** argv)
                 if (received_message) // can only check for continuous numbers if already received at least one packet
                 {
                   uint8_t message_distance = received_message_number - last_received_message_number;
-                  if ( message_distance > 1 )
+                  if (message_distance > 1)
                   {
                     ROS_WARN_STREAM("Missed " << message_distance - 1 << " MPU6050 data packets from arduino.");
                   }
@@ -238,19 +238,19 @@ int main(int argc, char** argv)
           ser.setTimeout(to);
           ser.open();
         }
-        catch (serial::IOException& e)
+        catch (serial::IOException &e)
         {
           ROS_ERROR_STREAM("Unable to open serial port " << ser.getPort() << ". Trying again in 5 seconds.");
           ros::Duration(5).sleep();
         }
 
-        if(ser.isOpen())
+        if (ser.isOpen())
         {
           ROS_DEBUG_STREAM("Serial port " << ser.getPort() << " initialized and opened.");
         }
       }
     }
-    catch (serial::IOException& e)
+    catch (serial::IOException &e)
     {
       ROS_ERROR_STREAM("Error reading from the serial port " << ser.getPort() << ". Closing connection.");
       ser.close();

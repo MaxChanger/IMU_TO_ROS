@@ -117,9 +117,9 @@ int main(int argc, char **argv)
 								int16_t ay = (((0xff & (char)input[data_packet_start + 5]) << 8) | 0xff & (char)input[data_packet_start + 4]);
 								int16_t az = (((0xff & (char)input[data_packet_start + 7]) << 8) | 0xff & (char)input[data_packet_start + 6]);
 								// calculate accelerations in m/s²
-								double axf = ax / 32768.0 * 16;
-								double ayf = ay / 32768.0 * 16;
-								double azf = az / 32768.0 * 16;
+								double axf = ax / 32768.0 * 16 * 9.8;
+								double ayf = ay / 32768.0 * 16 * 9.8;
+								double azf = az / 32768.0 * 16 * 9.8;
 
 								// get gyro values
 								int16_t gx = (((0xff & (char)input[data_packet_start + 14]) << 8) | 0xff & (char)input[data_packet_start + 13]);
