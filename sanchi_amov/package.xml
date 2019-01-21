@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <name>sanchi_amov</name>
+  <version>0.1.0</version>
+  <description>The sanchi_amov package</description>
+  <maintainer email="jin_wu_uestc@hotmail.com">Jin Wu</maintainer>
+  <maintainer email="xdzhangnan@126.com">Steven Zhang</maintainer>
+
+  <author>Jin Wu Steven Zhang</author>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>roscpp</buildtool_depend>
+  <buildtool_depend>sensor_msgs</buildtool_depend>
+  <buildtool_depend>tf</buildtool_depend>
+  <buildtool_depend>cmake_modules</buildtool_depend>
+
+  <run_depend>catkin</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>tf</run_depend>
+  <export>
+  </export>
+</package>

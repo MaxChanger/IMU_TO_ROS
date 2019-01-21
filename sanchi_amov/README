@@ -1,0 +1,5 @@
+先编译包
+需要安装rviz_imu_plugin(kinetic如下):sudo apt-get install ros-kinetic-rviz-imu-plugin 
+1.运行imu:roslaunch sanchi_amov imu_100D2.launch
+2.运行rviz:roslaunch sanchi_amov rviz.launch
+不同的型号自己改launch文件对应内容
