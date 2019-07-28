@@ -587,6 +587,8 @@ int main(int argc, char** argv)
 
               msg.header.stamp = ros::Time::now();
               msg.header.frame_id = frame_id;
+	      // If you use cartographer_ros, note here that the conversion of radian and angle is required. 
+	      // Add * M_PI / 180.0
               msg.angular_velocity.x = d2f_gyro(data + 15)* M_PI / 180.0;
               msg.angular_velocity.y = d2f_gyro(data + 17)* M_PI / 180.0;
               msg.angular_velocity.z = d2f_gyro(data + 19)* M_PI / 180.0;
